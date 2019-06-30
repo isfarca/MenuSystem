@@ -2,7 +2,7 @@
 
 public class Menu<T> : Menu where T : Menu<T>
 {
-    // Reference types
+    // Instance.
     private static T instance;
 
     /// <summary>
@@ -30,9 +30,13 @@ public class Menu<T> : Menu where T : Menu<T>
     {
         // Create or Activate a menu instance and open the menu.
         if (instance == null)
+        {
             MenuManager.Instance.CreateInstance<T>();
+        }
         else
+        {
             instance.gameObject.SetActive(true);
+        }
 
         MenuManager.Instance.OpenMenu(instance);
     }
@@ -54,28 +58,14 @@ public class Menu<T> : Menu where T : Menu<T>
     }
 
     /// <summary>
-    /// By pressing back, start the closing of menu.
+    /// Get the instance of the menu class.
     /// </summary>
-    public override void OnBackPressed()
-    {
-        Close();
-    }
-
-    /// <summary>
-    /// Get/Set the instance of the menu class.
-    /// </summary>
-    public T Instance
-    {
-        get { return instance; }
-        private set { instance = value; }
-    }
+    public T Instance => instance;
 }
 
 public abstract class Menu : MonoBehaviour
 {
-    // Value types
+    // Type of closes.
     public bool destroyWhenClosed = true;
     public bool disableMenuUnderneath = true;
-
-    public abstract void OnBackPressed();
 }

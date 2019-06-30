@@ -3,28 +3,17 @@ using UnityEngine;
 
 public class MenuManager : Singleton<MenuManager>
 {
-    // Reference types
-    private Stack<Menu> menuStack = new Stack<Menu>();
+    // Menus.
+    private readonly Stack<Menu> menuStack = new Stack<Menu>();
     [SerializeField] private Menu[] menuPrefabs;
-
-    // Use this for initialization
-    void Start()
+    
+    /// <summary>
+    /// Initializing.
+    /// </summary>
+    private void Start()
     {
         // Start the main menu.
         MainMenu.Show();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // By pressing escape, open or close the menu.
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (menuStack.Count > 0)
-                menuStack.Peek().OnBackPressed();
-            else
-                MainMenu.Show();
-        }
     }
 
     /// <summary>
@@ -46,11 +35,6 @@ public class MenuManager : Singleton<MenuManager>
     /// <param name="instance">The instance of the menu.</param>
     public void OpenMenu(Menu instance)
     {
-        // Declare variables
-        CanvasGroup canvasGroup;
-        Canvas topCanvas;
-        Canvas prevCanvas;
-
         // Opening menu.
         if (menuStack.Count > 0)
         {
@@ -58,21 +42,27 @@ public class MenuManager : Singleton<MenuManager>
             {
                 foreach (var menu in menuStack)
                 {
-                    canvasGroup = menu.GetComponent<CanvasGroup>();
+                    var canvasGroup = menu.GetComponent<CanvasGroup>();
 
                     if (canvasGroup != null)
+                    {
                         canvasGroup.interactable = false;
+                    }
                     else
+                    {
                         menu.gameObject.SetActive(false);
+                    }
 
                     if (menu.disableMenuUnderneath)
+                    {
                         break;
+                    }
                 }
             }
 
             // Get the first and last menu.
-            topCanvas = instance.GetComponent<Canvas>();
-            prevCanvas = menuStack.Peek().GetComponent<Canvas>();
+            var topCanvas = instance.GetComponent<Canvas>();
+            var prevCanvas = menuStack.Peek().GetComponent<Canvas>();
 
             // Sorting all menus.
             topCanvas.sortingOrder = prevCanvas.sortingOrder + 1;
@@ -111,30 +101,39 @@ public class MenuManager : Singleton<MenuManager>
     /// <summary>
     /// Closing the menu of the top of the stack.
     /// </summary>
-    public void CloseTopMenu()
+    private void CloseTopMenu()
     {
-        // Declare variables.
+        // Get top menu instance.
         var instance = menuStack.Pop();
-        CanvasGroup canvasGroup;
-
+        
         // Destroy the menu.
         if (instance.destroyWhenClosed)
+        {
             Destroy(instance.gameObject);
+        }
         else
+        {
             instance.gameObject.SetActive(false);
+        }
 
         // Activate all canvas.
         foreach (var menu in menuStack)
         {
-            canvasGroup = menu.GetComponent<CanvasGroup>();
+            var canvasGroup = menu.GetComponent<CanvasGroup>();
 
             if (canvasGroup != null)
+            {
                 canvasGroup.interactable = true;
+            }
             else
+            {
                 menu.gameObject.SetActive(true);
+            }
 
             if (menu.disableMenuUnderneath)
+            {
                 break;
+            }
         }
     }
 
@@ -145,16 +144,15 @@ public class MenuManager : Singleton<MenuManager>
     /// <returns>Missing reference exception.</returns>
     private T GetPrefab<T>() where T : Menu
     {
-        // Declare variables.
-        var prefab = null as T;
-
         // Check, if you have menu prefabs.
         foreach (var menu in menuPrefabs)
         {
-            prefab = menu as T;
+            var prefab = menu as T;
 
             if (prefab != null)
+            {
                 return prefab;
+            }
         }
 
         // By doesn't menu prefabs, output the error.
