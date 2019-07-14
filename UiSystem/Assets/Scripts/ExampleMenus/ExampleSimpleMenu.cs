@@ -21,6 +21,7 @@
     /// </summary>
     public void ShowOptionsMenu()
     {
+        Hide();
         ExampleOptionsMenu.Show();
     }
 }

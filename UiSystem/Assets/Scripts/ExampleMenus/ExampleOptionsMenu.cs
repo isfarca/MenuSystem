@@ -21,8 +21,7 @@
     /// </summary>
     public void BackToSimpleMenu()
     {
-        ExampleSimpleMenu.Open();
-
         Hide();
+        ExampleSimpleMenu.Open();
     }
 }
